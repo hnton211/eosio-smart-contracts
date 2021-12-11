@@ -1,0 +1,124 @@
+{
+    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT ",
+    "version": "eosio::abi/1.2",
+    "types": [],
+    "structs": [
+        {
+            "name": "insert",
+            "base": "",
+            "fields": [
+                {
+                    "name": "content",
+                    "type": "string"
+                },
+                {
+                    "name": "user",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "rmvbytask",
+            "base": "",
+            "fields": [
+                {
+                    "name": "task_ID",
+                    "type": "uint64"
+                },
+                {
+                    "name": "user",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "rmvbyuser",
+            "base": "",
+            "fields": [
+                {
+                    "name": "user",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "task",
+            "base": "",
+            "fields": [
+                {
+                    "name": "task_ID",
+                    "type": "uint64"
+                },
+                {
+                    "name": "content",
+                    "type": "string"
+                },
+                {
+                    "name": "user",
+                    "type": "name"
+                },
+                {
+                    "name": "completed",
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "name": "update",
+            "base": "",
+            "fields": [
+                {
+                    "name": "task_ID",
+                    "type": "uint64"
+                },
+                {
+                    "name": "content",
+                    "type": "string"
+                },
+                {
+                    "name": "user",
+                    "type": "name"
+                },
+                {
+                    "name": "completed",
+                    "type": "bool"
+                }
+            ]
+        }
+    ],
+    "actions": [
+        {
+            "name": "insert",
+            "type": "insert",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "rmvbytask",
+            "type": "rmvbytask",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "rmvbyuser",
+            "type": "rmvbyuser",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "update",
+            "type": "update",
+            "ricardian_contract": ""
+        }
+    ],
+    "tables": [
+        {
+            "name": "todolist",
+            "type": "task",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        }
+    ],
+    "kv_tables": {},
+    "ricardian_clauses": [],
+    "variants": [],
+    "action_results": []
+}
