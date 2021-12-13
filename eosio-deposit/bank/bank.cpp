@@ -28,9 +28,20 @@ void bank::withdraw(const name &to, const asset &amount) {
     auto itr = table.find(sym.raw());
     check(itr != table.end(), "No such currency deposited!");
 
-	auto fee = static_cast<long double>(0.05) * static_cast<long double>(amount.amount);	
+    size_t size = transaction_size();
+    char buf[size];
+    size_t read = read_transaction(buf, size);
+    check(size == read, "read_transaction() failed!");
+    checksum256 res = sha256(buf, read);
+
+    uint64_t rate;
+    memcpy(&rate, res.data(), sizeof(rate));
+    rate = (rate % (max_fee_percent - min_fee_percent + 1)) + min_fee_percent;
+    print(rate);
+
+    auto fee = (static_cast<long double>(rate) / static_cast<long double>(100))
+        * static_cast<long double>(amount.amount);
     auto total_amount = amount.amount + static_cast<int64_t>(fee);
-    print(total_amount);
     
     const auto& item = table.get(sym.raw());
     check(item.quantity.amount >= total_amount, "Not enough value for withdrawal!");

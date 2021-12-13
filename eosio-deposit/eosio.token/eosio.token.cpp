@@ -86,13 +86,13 @@ void token::transfer( const name&    from,
     stats statstable( get_self(), sym.raw() );
     const auto& st = statstable.get( sym.raw() );
 
-    require_recipient( from );
-    require_recipient( to );
-
     check( quantity.is_valid(), "invalid quantity" );
     check( quantity.amount > 0, "must transfer positive quantity" );
     check( quantity.symbol == st.supply.symbol, "symbol precision mismatch" );
     check( memo.size() <= 256, "memo has more than 256 bytes" );
+    
+    require_recipient (from);
+    require_recipient (to);
 
     auto payer = has_auth( to ) ? to : from;
 

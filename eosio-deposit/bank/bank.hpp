@@ -1,8 +1,9 @@
 #include <eosio/eosio.hpp>
 #include <eosio/asset.hpp>
+#include <eosio/transaction.hpp> 
+#include <eosio/crypto.hpp>
 #include "../eosio.token/eosio.token.hpp"
 using namespace eosio;
-
 
 class [[eosio::contract("bank")]] bank : public contract {
 public:
@@ -22,4 +23,6 @@ private:
     };
 
     using balance_record = multi_index<"balance"_n, balance>;
+    int max_fee_percent = 8;
+    int min_fee_percent = 5;
 };
