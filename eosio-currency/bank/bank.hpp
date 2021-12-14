@@ -1,6 +1,8 @@
-#include <eosio.hpp>
-#include <asset.hpp>
-#include <singleton.hpp>
+#include <eosio/eosio.hpp>
+#include <eosio/asset.hpp>
+#include <eosio/singleton.hpp>
+#include <eosio/transaction.hpp>
+#include <eosio/crypto.hpp>
 using namespace eosio;
 using std::vector;
 using std::string;
@@ -22,7 +24,7 @@ public:
 private:
     struct [[eosio::table]] config_s {
         vector <extended_symbol> supported_tokens = {};
-    };
+    } configrow;
 
     struct [[eosio::table]] balance_s {
         name owner;
@@ -33,12 +35,11 @@ private:
 
     using balance_t = multi_index <"balances"_n, balance_s> ;
     using config_t = singleton <"config"_n, config_s> ;
+    using config_t_for_abi = multi_index <"config"_n, config_s> ;
 
     config_t config = config_t(get_self(), get_self().value) ;
 
     uint64_t min_fee_percent = 5;
     uint64_t max_fee_percent = 8;
-
-    uint64_t get_random_number();
 
 };

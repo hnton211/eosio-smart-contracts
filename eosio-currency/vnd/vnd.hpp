@@ -1,6 +1,6 @@
 #include <eosio/eosio.hpp>
-#include <asset.hpp>
-#include <singleton.hpp>
+#include <eosio/asset.hpp>
+#include <eosio/singleton.hpp>
 using namespace eosio;
 using std::string;
 
@@ -30,13 +30,17 @@ private:
 
     struct [[eosio::table]] info
     {
-        symbol_code sym = symbol_code(name("vnd").value);
+        symbol sym = symbol(
+        	symbol_code("VND"),
+        	0
+        );
         int64_t max_supply = 0;
         int64_t current_supply = 0;
-    };
+    } inforow;
 
     using balance_table = multi_index<"balances"_n, balance>;
     using stat_table = singleton<"stats"_n, info>;
+    using stat_table_for_abi = multi_index<"stats"_n, info> ;
 
     balance_table blc = balance_table(get_self(), get_self().value);
     stat_table stat = stat_table(get_self(), get_self().value);

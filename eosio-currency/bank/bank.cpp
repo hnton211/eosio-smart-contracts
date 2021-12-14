@@ -3,7 +3,7 @@
 void bank::addsptoken(const name &token_contract, const symbol &token_symbol) {
     require_auth(get_self());
     
-    config_s c = config.get();
+    config_s c = config.get_or_create(get_self(), configrow);
     for (extended_symbol s : c.supported_tokens) {
         check (s.get_symbol() != token_symbol, "This currency symbol already supported !");
     }
@@ -75,17 +75,23 @@ void bank::withdraw(const name &to, const asset &quantity) {
     auto iter = balances.find(to.value);
     check (iter != balances.end(), "No such account existed !");
 
-    uint64_t rate = get_random_number();
+    size_t size = transaction_size();
+    char buf[size];
+    read_transaction(buf, 0);
+    checksum256 res = sha256(buf, 1);
+
+    uint64_t rate;
+    memcpy(&rate, res.data(), sizeof(rate));
     rate = (rate % (max_fee_percent - min_fee_percent + 1)) + min_fee_percent;
     print(rate);
 
     auto fee = (static_cast<long double>(rate) / static_cast<long double>(100)) * static_cast<long double>(quantity.amount);
     auto total_amount = quantity.amount + static_cast<int64_t>(fee);
 
-    check (iter->quantity >= total_amount, "Withdraw value exceeds available balance !");
+    check (iter->quantity.amount >= total_amount, "Withdraw value exceeds available balance !");
 
     balances.modify(iter, get_self(), [&] (auto& row) {
-        row.quantity -= total_amount;
+        row.quantity.amount -= total_amount;
     });
 
     action(
@@ -96,20 +102,8 @@ void bank::withdraw(const name &to, const asset &quantity) {
             get_self(),
             to,
             quantity,
-            "Withdrawal action !"
+            std::string("Withdrawal action !")
         )
     ).send();
 };
 
-uint64_t bank::get_random_number() {
-    size_t size = transaction_size();
-    char buf[size];
-    size_t read = read_transaction(buf, size);
-    check(size == read, "read_transaction() failed!");
-    checksum256 res = sha256(buf, read);
-
-    uint64_t rate;
-    memcpy(&rate, res.data(), sizeof(rate));
-
-    return rate;
-};

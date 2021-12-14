@@ -4,8 +4,8 @@ void vnd::create(const asset &max_supply)
 {
     require_auth(get_self());
 
-    info i = stat.get();
-    check(max_supply.symbol.code() == i.sym, "Wrong currency !");
+    info i = stat.get_or_create(get_self(), inforow);
+    check(max_supply.symbol.code().raw() == i.sym.code().raw(), "Wrong currency !");
     check(max_supply.is_valid(), "Invalid amount !");
     check(i.max_supply == 0, "Currency can only be created once !");
 
@@ -22,7 +22,7 @@ void vnd::issue(const name &to, const asset &quantity, const string &memo)
     info i = stat.get();
 
     check(is_account(to), "Account does not exist !");
-    check(quantity.symbol.code() == i.sym, "Wrong currency !");
+    check(quantity.symbol.code().raw() == i.sym.code().raw(), "Wrong currency !");
     check(quantity.amount > 0, "Issue amount must be positive !");
     check(quantity.amount <= (i.max_supply - i.current_supply), "Issue amount exceeds limit !");
 
@@ -50,7 +50,7 @@ void vnd::transfer(const name &from, const name &to, const asset &quantity, cons
 
     check(from != to, "Cannot transfer to self !");
     check(is_account(to), "Invalid receiver account !");
-    check(quantity.symbol.code() == stat.get().sym, "Wrong currency !");
+    check(quantity.symbol.code().raw() == stat.get().sym.code().raw(), "Wrong currency !");
     check(quantity.amount > 0, "Transfer amount must be positive !");
     check(sizeof(memo) <= 256, "Memo must be <= 256 characters long !");
 
